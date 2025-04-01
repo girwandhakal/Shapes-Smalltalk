@@ -5,7 +5,7 @@ Shape subclass: Cylinder
     
     | radius height |
 
-    PI  := 3.1415926535.
+    PI  := 3.14159265358979323846.
 
     Cylinder class >> new: aName height:aHeight radius: aRadius
     [
@@ -89,7 +89,6 @@ s := Cylinder new: 'Water Tank' height: 5 radius: 4.
 
 tests := Dictionary new.
 
-"Expected to PASS"
 tests at: 'type == cyl (should PASS)'        put: { #('type' '==' 'cyl') . true }.
 tests at: 'area > 200'                            put: { #('area' '>' 200) . true }.
 tests at: 'area <= 230'                           put: { #('area' '<=' 230) . true }.
@@ -98,7 +97,6 @@ tests at: 'volume == 251.33'                      put: { #('volume' '==' 251.33)
 tests at: 'multi check (type and volume)'         put: { #('type' '==' 'cyl' 'volume' '<' 300) . true }.
 tests at: 'multi check (area and volume)'         put: { #('area' '>' 200 'volume' '<=' 300) . true }.
 
-"Expected to FAIL"
 tests at: 'type == sphere (should FAIL)'          put: { #('type' '==' 'sphere') . false }.
 tests at: 'area < 100 (should FAIL)'              put: { #('area' '<' 100) . false }.
 tests at: 'volume > 500 (should FAIL)'            put: { #('volume' '>' 500) . false }.

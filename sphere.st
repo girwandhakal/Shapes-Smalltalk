@@ -5,7 +5,7 @@ Shape subclass: Sphere
     
     | radius |
 
-    PI  := 3.1415926535.
+    PI  := 3.14159265358979323846.
 
     Sphere class >> new: aName radius: aRadius
     [

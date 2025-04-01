@@ -5,7 +5,7 @@ Shape subclass: Box
     
     | length width height |
 
-    PI  := 3.1415926535.
+    PI  := 3.14159265358979323846.
 
     Box class >> new: aName length: aLength width: aWidth height:aHeight
     [

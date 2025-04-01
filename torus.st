@@ -5,7 +5,7 @@ Shape subclass: Torus
     
     | smallRadius bigRadius |
 
-    PI  := 3.1415926535.
+    PI  := 3.14159265358979323846.
 
     Torus class >> new: aName smallRadius: aSmallRadius bigRadius: aBigRadius
     [
@@ -15,21 +15,21 @@ Shape subclass: Torus
         ^instance
     ]
 
-    init: aName length: aLength width: aWidth height:aHeight
+    init: aName smallRadius: aSmallRadius bigRadius: aBigRadius
     [
         super init: aName.
         smallRadius := aSmallRadius.
         bigRadius:= aBigRadius.
     ]
-    "SA = 2lw + 2lh + 2wh "
+    " A = 4π²Rr "
     getArea
     [
-        ^( ( (2*length*width) + (2*length*height) + (2*width*height) ) * 100) rounded/100.0
+        ^( ( 4 * PI * PI * bigRadius * smallRadius ) * 100) rounded/100.0
     ]
-
+    " V=(πr2)(2πR) "
     getVolume
     [
-        ^( length * width * height  * 100.0 ) rounded / 100.0 
+        ^( 2 * PI * PI * smallRadius * smallRadius * bigRadius * 100.0 ) rounded / 100.0 
     ]
 
     test: anArray 
@@ -45,7 +45,7 @@ Shape subclass: Torus
             operation := anArray at: index + 1.
             value := anArray at: index + 2. "is the thing we are comparing to"
 
-            (name = 'type') ifTrue:[val := 'box'].
+            (name = 'type') ifTrue:[val := 'torus'].
             (name = 'area') ifTrue:[val := (self getArea asNumber). value:=value asNumber].
             (name = 'volume') ifTrue:[val := (self getVolume asNumber). value:=value asNumber].
 
@@ -63,14 +63,12 @@ Shape subclass: Torus
     [
         | output ss |
         ss := WriteStream on: ''.
-        ss nextPutAll: 'Box: '.
+        ss nextPutAll: 'Torus: '.
         ss nextPutAll: self getName.
-        ss nextPutAll: ', Length='.
-        ss nextPutAll: length asString.
-        ss nextPutAll: ', Width='.
-        ss nextPutAll: width asString.
-        ss nextPutAll: ', Height='.
-        ss nextPutAll: height asString.
+        ss nextPutAll: ', Small Radius='.
+        ss nextPutAll: smallRadius asString.
+        ss nextPutAll: ', Big Radius='.
+        ss nextPutAll: bigRadius asString.
         ss nextPut: Character lf.
         ss nextPut: Character tab.
         ss nextPutAll: 'Surface Area: '.
@@ -87,24 +85,23 @@ Shape subclass: Torus
 
 
 " 
-s := Box new: 'House' length: 10 width: 5.5 height: 1.25.
+s := Torus new: 'House' smallRadius: 10 bigRadius: 5.5.
 
 tests := Dictionary new.
 
-tests at: 'type == box (should PASS)'              put: { #('type' '==' 'box') . true }.
-tests at: 'area > 100'                             put: { #('area' '>' 100) . true }.
-tests at: 'area <= 150'                            put: { #('area' '<=' 150) . true }.
-tests at: 'volume < 100'                           put: { #('volume' '<' 100) . true }.
-tests at: 'volume == 68.75'                        put: { #('volume' '==' 68.75) . true }.
-tests at: 'multi check (type and volume)'          put: { #('type' '==' 'box' 'volume' '<' 100) . true }.
-tests at: 'multi check (area and volume)'          put: { #('area' '>' 100 'volume' '<=' 100) . true }.
+tests at: 'type == torus (should PASS)'              put: { #('type' '==' 'torus') . true }.
+tests at: 'area > 2000 (should PASS)'                put: { #('area' '>' 2000) . true }.
+tests at: 'area <= 2200 (should PASS)'               put: { #('area' '<=' 2200) . true }.
+tests at: 'volume < 11000 (should PASS)'             put: { #('volume' '<' 11000) . true }.
+tests at: 'volume == 10856.56 (should PASS)'          put: { #('volume' '==' 10856.56) . true }.
+tests at: 'multi check (type and volume)'            put: { #('type' '==' 'torus' 'volume' '<' 11000) . true }.
+tests at: 'multi check (area and volume)'            put: { #('area' '>' 2000 'volume' '<=' 11000) . true }.
 
-tests at: 'type == sphere (should FAIL)'           put: { #('type' '==' 'sphere') . false }.
-tests at: 'area < 100 (should FAIL)'               put: { #('area' '<' 100) . false }.
-tests at: 'volume > 100 (should FAIL)'             put: { #('volume' '>' 100) . false }.
-tests at: 'multi fail (wrong type)'                put: { #('type' '!=' 'box' 'volume' '<' 100) . false }.
-pass := 0.
-fail := 0.
+tests at: 'type == sphere (should FAIL)'             put: { #('type' '==' 'sphere') . false }.
+tests at: 'area < 1000 (should FAIL)'                put: { #('area' '<' 1000) . false }.
+tests at: 'volume > 12000 (should FAIL)'             put: { #('volume' '>' 12000) . false }.
+tests at: 'multi fail (wrong type)'                  put: { #('type' '!=' 'torus' 'volume' '<' 11000) . false }.
+
 
 pass := 0.
 fail := 0.
@@ -129,5 +126,5 @@ tests keysDo: [:label |
 Transcript show: '====================='; cr.
 Transcript show: 'Total Passed: ', pass printString; cr.
 Transcript show: 'Total Failed: ', fail printString; cr.
-Transcript show: '====================='; cr. 
-"
+Transcript show: '====================='; cr.  "
+
