@@ -84,7 +84,8 @@ Shape subclass: Sphere
     ]
 ]
 
-"
+
+" 
 s := Sphere new: 'Basketball' radius: 10.
 tests := Dictionary new.
 
@@ -121,4 +122,4 @@ Transcript show: '====================='; cr.
 Transcript show: 'Total Passed: ', pass printString; cr.
 Transcript show: 'Total Failed: ', fail printString; cr.
 Transcript show: '====================='; cr.
-"
+ "
