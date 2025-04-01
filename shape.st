@@ -1,8 +1,6 @@
 Object subclass: Shape 
 [
-    | name |
-    <comment: 'Name of shape'>
-
+    | name comparison |
     Shape class >> new: aName
     [
         | instance |
@@ -14,6 +12,18 @@ Object subclass: Shape
     init: aName 
     [
         name := aName.
+        "comparison dictionary"
+        comparison := Dictionary new.
+        comparison at: '==' put: [:leftValue :rightValue | leftValue = rightValue].
+        comparison at: '>=' put: [:leftValue :rightValue | leftValue >= rightValue].
+        comparison at: '<=' put: [:leftValue :rightValue | leftValue <= rightValue].
+        comparison at: '!=' put: [:leftValue :rightValue | leftValue ~= rightValue].
+        comparison at: '>' put: [:leftValue :rightValue | leftValue >= rightValue].
+        comparison at: '<' put: [:leftValue :rightValue | leftValue < rightValue].
+    ]
+
+    compare: op left: lValue right: rValue[
+        ^ (comparison at: op) value: lValue value: rValue. 
     ]
 
     getName 
@@ -45,6 +55,8 @@ Object subclass: Shape
     [
         self subclassResponsibility.
     ]
+
+
 ]
 
 
