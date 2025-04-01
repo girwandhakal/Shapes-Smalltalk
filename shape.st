@@ -1,9 +1,9 @@
-Object subclass Shape 
+Object subclass: Shape 
 [
     | name |
     <comment: 'Name of shape'>
 
-    Shape class >> new : aName
+    Shape class >> new: aName
     [
         | instance |
         instance := super new.
@@ -11,7 +11,7 @@ Object subclass Shape
         ^ instance.
     ]
 
-    init : aName 
+    init: aName 
     [
         name := aName.
     ]
@@ -21,7 +21,7 @@ Object subclass Shape
         ^ name.
     ]
 
-    setName : aString
+    setName: aString
     [
         name := aString.
     ]
@@ -36,7 +36,7 @@ Object subclass Shape
         self subclassResponsibility.
     ]
 
-    test : anArray
+    test: anArray
     [
         self subclassResponsibility.
     ]   
@@ -45,10 +45,6 @@ Object subclass Shape
     [
         self subclassResponsibility.
     ]
-
-
-
 ]
-
 
 
