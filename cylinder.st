@@ -7,15 +7,15 @@ Shape subclass: Cylinder
 
     PI  := 3.14159265358979323846.
 
-    Cylinder class >> new: aName height:aHeight radius: aRadius
+    Cylinder class >> new: aName radius: aRadius height:aHeight
     [
         | instance |
         instance := super new.
-        instance init: aName height:aHeight radius: aRadius.
+        instance init: aName radius: aRadius height:aHeight.
         ^instance
     ]
 
-    init: aName height:aHeight radius: aRadius
+    init: aName radius: aRadius height:aHeight
     [
         super init: aName.
         radius := aRadius.
@@ -85,7 +85,7 @@ Shape subclass: Cylinder
 
 
 " 
-s := Cylinder new: 'Water Tank' height: 5 radius: 4.
+s := Cylinder new: 'Water Tank' radius: 4 height: 5.
 
 tests := Dictionary new.
 
@@ -125,5 +125,5 @@ tests keysDo: [:label |
 Transcript show: '====================='; cr.
 Transcript show: 'Total Passed: ', pass printString; cr.
 Transcript show: 'Total Failed: ', fail printString; cr.
-Transcript show: '====================='; cr. "
+Transcript show: '====================='; c  "
 
