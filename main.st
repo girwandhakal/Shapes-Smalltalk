@@ -225,48 +225,64 @@ getCount: action cmd: aString "a number is a parameter representing the index of
 
     getTestConditions:testCount
     [
-        | count testArray testCondition|
-        testArray = OrderedCollection new.
+        | count testArray testCondition testConditionArray name operator value |
+        testArray := OrderedCollection new.
 
         count := 0.
         [count < testCount]
         whileTrue:
         [
-            Transcript show: 'Enter test condition #', count+1, ': '.
+            Transcript show: 'Enter test condition #', (count+1) asString , ': '.
             testCondition := FileStream stdin nextLine.
-            testConditionArray := testCondition asArray.
+            testConditionArray := testCondition substrings.
 
             name := testConditionArray at: 1.
             operator := testConditionArray at: 2.
             value := testConditionArray at:3.
-            (isValidName(name))
+            (self isValidName: name)
             ifFalse:
             [
                 Transcript show: name , ': invalid column.'; cr.
             ]
             ifTrue:
-                (isValidOp(operator))
+            [
+                (self isValidOp: operator)
                 ifFalse:
                 [
                     Transcript show: operator, ': invalid operator.'; cr.
                 ]
                 ifTrue:
                 [
-                    testArray put: 
+                    testArray add: name.
+                    testArray add: operator.
+                    testArray add: value.
+                    count := count + 1.
+                ].
+            ].
+            
+        ].
+        ^ testArray.
+    ]
 
-                ]
-            [
+    countShapes: testConds
+    [
+        | count myShapes |
+        count := 0.
+        myShapes := self getArray.
+        myShapes do:[ :i | (i test:testConds)ifTrue:[count:=count+1]].
+        ^count. 
+    ]
 
-            ]
-            count := count + 1.
-        ]
+    printShapes: testConds
+    [
+        | myShapes |
+        myShapes := self getArray.
+        myShapes do:[ :i | (i test:testConds)ifTrue:[i getInfo]].
     ]
 ]
 
 
 actions := #('print' 'count' 'min' 'max' 'total' 'avg').
-
-
 
 args := Smalltalk arguments.
 usage := 'Usage: shape.st sphere.st cylinder.st torus.st box.st -f main.st shape_file'.
@@ -278,6 +294,11 @@ usage := 'Usage: shape.st sphere.st cylinder.st torus.st box.st -f main.st shape
     ].
 fileName := args first.
 s:= ShapeList new: fileName.
+testC := s getTestConditions:1.
+output := s printShapes:testC.
+output printNl.
+
+" 
 [command = 'quit']
 whileFalse:
 [
@@ -291,7 +312,7 @@ whileFalse:
     ]
     ifFalse:
     [
-        action := s getAction: command. "returns the action in string format"
+        action := s getAction: command. 
         testCount := s getCount:action cmd:command.
 
         ((s isValidAction:action) and: [testCount >= 0])
@@ -312,8 +333,8 @@ whileFalse:
             (action = 'count')
             ifTrue:
             [
-                conds := s getTestConditions(testCount).
-                numOfShapes := s countShapes(arrayOfShapes, conds).
+                conds := s getTestConditions:testCount.
+                numOfShapes := s countShapes: conds.
                 Transcript show: 'There are ', numOfShapes, ' shapes. '; cr.
             ]
             ifFalse:
@@ -321,8 +342,8 @@ whileFalse:
                 (action = 'print')
                 ifTrue:
                 [
-                    conds := s getTestConditions(testCount)
-                    numOfShapes := s countShapes(arrayOfShapes, conds)
+                    conds := s getTestConditions:testCount.
+                    numOfShapes := s countShapes: conds.
                     (numOfShapes = 0)
                     ifTrue:
                     [
@@ -330,7 +351,7 @@ whileFalse:
                     ]
                     ifFalse:
                     [
-                        s printShapes(arrayOfShapes, conds).
+                        s printShapes:arrayOfShapes conditionArray: conds.
                     ] 
 
                 ]
@@ -339,8 +360,8 @@ whileFalse:
                     (action = 'min')
                     ifTrue:
                     [
-                        conds := s getTestConditions(testCount).
-                        numOfShapes := s countShapes(arrayOfShapes, conds).
+                        conds := s getTestConditions:testCount.
+                        numOfShapes := s countShape:arrayOfShapes conditionArray:conds.
                         (numOfShapes = 0)
                         ifTrue:
                         [
@@ -372,11 +393,8 @@ whileFalse:
             ]
         ]
 
-    ].
+    ]. 
+] 
 
 
-
-]
-
-
-
+  "

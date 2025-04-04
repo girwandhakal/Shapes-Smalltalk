@@ -85,8 +85,9 @@ Shape subclass: Sphere
 ]
 
 
-" 
+"
 s := Sphere new: 'Basketball' radius: 10.
+
 tests := Dictionary new.
 
 tests at: 'type == sphere (should PASS)'        put: { #('type' '==' 'sphere') . true }.
