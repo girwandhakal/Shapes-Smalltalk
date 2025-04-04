@@ -75,7 +75,6 @@ Shape subclass: Torus
         ss nextPutAll: self getArea asString.
         ss nextPutAll: ', Volume: '.
         ss nextPutAll: self getVolume asString.
-        ss nextPut: Character lf.
         output := ss contents.
         ^output.
 

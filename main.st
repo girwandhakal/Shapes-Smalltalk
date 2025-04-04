@@ -17,7 +17,7 @@ Object subclass: ShapeList
         ^ instance.
     ]
 
-printHelp [
+    printHelp [
     | names ops |
     names := #('type' 'area' 'volume').
     ops := #('==' '!=' '>=' '<=' '>' '<').
@@ -75,7 +75,7 @@ printHelp [
     ].
 
     Transcript cr.
-]
+    ]
 
 
     getArray
@@ -275,9 +275,10 @@ getCount: action cmd: aString "a number is a parameter representing the index of
 
     printShapes: testConds
     [
-        | myShapes |
+        | myShapes output |
+        output := ' '.
         myShapes := self getArray.
-        myShapes do:[ :i | (i test:testConds)ifTrue:[i getInfo]].
+        myShapes do:[ :i | (i test:testConds)ifTrue:[(i getInfo) displayNl]].
     ]
 ]
 
@@ -294,17 +295,16 @@ usage := 'Usage: shape.st sphere.st cylinder.st torus.st box.st -f main.st shape
     ].
 fileName := args first.
 s:= ShapeList new: fileName.
-testC := s getTestConditions:1.
-output := s printShapes:testC.
-output printNl.
 
-" 
+
 [command = 'quit']
 whileFalse:
 [
     Transcript show: 'Enter a command: '.
     command := FileStream stdin nextLine.
-
+    (command = 'quit')
+    ifFalse:
+    [
     (command = 'help')
     ifTrue:
     [
@@ -351,7 +351,7 @@ whileFalse:
                     ]
                     ifFalse:
                     [
-                        s printShapes:arrayOfShapes conditionArray: conds.
+                        s printShapes:conds.
                     ] 
 
                 ]
@@ -361,7 +361,7 @@ whileFalse:
                     ifTrue:
                     [
                         conds := s getTestConditions:testCount.
-                        numOfShapes := s countShape:arrayOfShapes conditionArray:conds.
+                        numOfShapes := s countShapes:conds.
                         (numOfShapes = 0)
                         ifTrue:
                         [
@@ -369,7 +369,27 @@ whileFalse:
                         ]
                         ifFalse:
                         [
+                            area_min := Float infinity.
+                            vol_min := Float infinity.
+                            myArray := s getArray.
+                            myArray do:[ :i | (i test:conds)ifTrue:[
+                                area := i getArea.
+                                (area < area_min)
+                                ifTrue:
+                                [
+                                    area_min := area.
+                                ].
+                                volume := i getVolume.
+                                (volume < volume_min)
+                                ifTrue:
+                                [
+                                    volume_min := volume.
+                                ].
+                            ]
+                            ]
 
+                            Transcript show: 'min(Surface Area)=', area_min ;cr.
+                            Transcript show: 'min(Volume)=', volume_min; cr.
                         ]
 
                     ]
@@ -378,23 +398,87 @@ whileFalse:
                         (action = 'max')
                         ifTrue:
                         [
+                            conds := s getTestConditions:testCount.
+                            numOfShapes := s countShapes:conds.
+                            (numOfShapes = 0)
+                            ifTrue:
+                            [
+                                Transcript show: 'There are no shapes satisfying the condition(s)'; cr.
+                            ]
+                            ifFalse:
+                            [
+                                area_max := 0.
+                                volume_max := 0.
+                                myArray := s getArray.
+                                myArray do:[ :i | (i test:conds)ifTrue:[
+                                    area := i getArea.
+                                    (area > area_max)
+                                    ifTrue:
+                                    [
+                                        area_max := area.
+                                    ].
+                                    volume := i getVolume.
+                                    (volume > volume_max)
+                                    ifTrue:
+                                    [
+                                        volume_max := volume.
+                                    ].
+                                ]
+                                ]
 
+                                Transcript show: 'max(Surface Area)=', (area_max asString) ;cr.
+                                Transcript show: 'max(Volume)=', (volume_max asString); cr.
+                            ]
                         ]
                         ifFalse:
                         [
                             (action = 'total' or: [action = 'avg'])
                             ifTrue:
                             [
-
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ]
-
+                                conds := s getTestConditions:testCount.
+                                numOfShapes := s countShapes:conds.
+                                (numOfShapes = 0)
+                                ifTrue:
+                                [
+                                    Transcript show: 'There are no shapes satisfying the condition(s)'; cr.
+                                ]
+                                ifFalse:
+                                [
+                                    myArray := s getArray.
+                                    area_total := 0.
+                                    volume_total := 0.
+                                    myArray do:[:i | 
+                                        (i test:conds)
+                                        ifTrue:
+                                        [
+                                            area_total := area_total + (i getArea).
+                                            volume_total := volume_total + (i getVolume).
+                                        ].
+                                    ].
+                                    (action = 'total')
+                                    ifTrue:
+                                    [
+                                        Transcript show: 'total(Surface Area)=', (area_total asString); cr.
+                                        Transcript show: 'total(Volume)=', volume_total asString; cr.
+                                        area_total := 0.
+                                        volume_total := 0.
+                                    ]
+                                    ifFalse:
+                                    [
+                                        Transcript show: 'avg(Surface Area)=', (area_total/numOfShapes) asString; cr.
+                                        Transcript show: 'avg(Volume)=', (volume_total/numOfShapes) asString; cr.
+                                        area_total := 0.
+                                        volume_total := 0.
+                                    ].
+                                ].
+                            ].
+                        ].
+                    ].
+                ].
+            ].
+        ].
     ]. 
+    ].
 ] 
 
 
-  "

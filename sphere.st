@@ -77,7 +77,6 @@ Shape subclass: Sphere
         ss nextPutAll: self getArea asString.
         ss nextPutAll: ', Volume: '.
         ss nextPutAll: self getVolume asString.
-        ss nextPut: Character lf.
         output := ss contents.
         ^output.
 
